@@ -1,0 +1,7 @@
+ALERT CurlAnswerIsBad
+  IF graphite_events_curl{metric="response_code", host="360tv.ru"} != 200
+  FOR 2m
+  ANNOTATIONS {
+    summary = "360tv.ru was answered with wrong HTTP code",
+    description = "HTTP code of 360tv.ru is {{ labels.response_code }}",
+  }

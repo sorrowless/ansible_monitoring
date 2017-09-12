@@ -1,0 +1,22 @@
+---
+- name: Install and configure docker into docker-related hosts
+  hosts: docker
+  vars_files:
+    - "vars/{{ ansible_os_family }}.yml"
+
+  tasks:
+  - name: Install docker packages
+    package:
+      name: "{{ item }}"
+      state: latest
+    with_items: "{{ docker_packages }}"
+
+  - name: Configure network ranges for docker hosts
+    docker_network:
+      name: "{{ docker_network_name }}"
+      driver_options:
+        com.docker.network.bridge.name: net2
+      ipam_options:
+        subnet: '{{ docker_network_subnet }}'
+        gateway: '{{ docker_network_gateway }}'
+        iprange: '{{ docker_network_iprange }}'

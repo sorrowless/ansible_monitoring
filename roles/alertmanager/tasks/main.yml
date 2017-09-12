@@ -1,0 +1,40 @@
+---
+- name: Create needed directories for docker-alertmanager
+  file:
+    dest: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/docker/alertmanager
+    - /var/alertmanager/data
+
+- name: Copy docker alertmanager configuration to host
+  template:
+    src: config.yml
+    dest: /etc/docker/alertmanager/config.yml
+    mode: 0755
+
+
+- name: Start docker Alertmanager container
+  docker_service:
+    project_name: alertmanager
+    definition:
+      version: '2'
+      services:
+        alertmanager:
+          image: "prom/alertmanager"
+          container_name: "alertmanager"
+          expose:
+            - "9093"
+          volumes:
+            - /etc/docker/alertmanager/config.yml:/alertmanager/config.yml
+            - /var/alertmanager/data:/alertmanager/data
+          command: -config.file=/alertmanager/config.yml -storage.path=/alertmanager/data
+          hostname: "alertmanager"
+          dns: "{{ mgmt_dns_primary_ip }}"
+          restart: always
+          labels: "{{ docker_alertmanager_labels }}"
+      networks:
+        default:
+          external:
+            name: "{{ docker_network_name }}"

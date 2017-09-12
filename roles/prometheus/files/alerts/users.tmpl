@@ -1,0 +1,6 @@
+ALERT TooMuchUsers
+  IF graphite_events_users > 20
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} has too much users inside",
+    description = "{{ $labels.host }} of job {{ $labels.job }} has more than 20 users in it",
+  }

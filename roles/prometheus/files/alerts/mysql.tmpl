@@ -1,0 +1,8 @@
+ALERT MysqlHasManyThreadsRan
+  IF graphite_events_mysql{metric="threads-cached"} > 200
+  OR graphite_events_mysql{metric="threads-running"} > 200
+  FOR 5m
+  ANNOTATIONS {
+    summary = "Too many mysql threads for {{ labels.host }} ran",
+    description = "Too many mysql threads for {{ labels.host }} ran",
+  }

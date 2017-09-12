@@ -1,0 +1,37 @@
+---
+- name: Create needed directories for docker-graphite-exporter
+  file:
+    dest: /etc/docker/graphite-exporter
+    state: directory
+    mode: 0755
+
+- name: Copy docker Graphite-exporter configuration to host
+  copy:
+    src: graphite_mapping.conf
+    dest: /etc/docker/graphite-exporter/graphite_mapping.conf
+    mode: 0755
+
+- name: Start docker Graphite-exporter container
+  docker_service:
+    project_name: graphite-exporter
+    definition:
+      version: '2'
+      services:
+        graphite-exporter:
+          image: "prom/graphite-exporter"
+          container_name: "graphite_exporter"
+          expose:
+            - "9108"
+            - "9109"
+            - "9109/udp"
+          volumes:
+            - /etc/docker/graphite-exporter/graphite_mapping.conf:/tmp/graphite_mapping.conf
+          command: -graphite.mapping-config=/tmp/graphite_mapping.conf
+          hostname: "graphite-exporter"
+          dns: "{{ mgmt_dns_primary_ip }}"
+          restart: always
+          labels: "{{ docker_graphite_exporter_labels }}"
+      networks:
+        default:
+          external:
+            name: "{{ docker_network_name }}"

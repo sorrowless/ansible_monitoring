@@ -1,0 +1,6 @@
+ALERT InstanceRebooted
+  IF graphite_events_uptime < 200
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} has been rebooted",
+    description = "Host {{ $labels.host }} has been rebooted.",
+  }

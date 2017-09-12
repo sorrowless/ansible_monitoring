@@ -1,0 +1,8 @@
+---
+keys_directory: /var/named/keys
+dns_allow_nets: localnets
+be_forward_server: true
+dns_forwarders:
+  - 8.8.8.8
+  - 8.8.4.4
+zones: []

@@ -1,0 +1,11 @@
+{
+  "dockerddns": {
+    "dnsserver" : "{{ mgmt_dns_primary_ip }}",
+    "dnsport" : 53,
+    "keyname" : "ddns_updates",
+    "zonename" : "{{ mgmt_dns_domain }}",
+    "intprefix" : "",
+    "extprefix" : "",
+    "ttl" : 60
+  }
+}

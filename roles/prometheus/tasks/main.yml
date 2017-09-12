@@ -1,0 +1,50 @@
+---
+- name: Create needed directories for docker-prometheus
+  file:
+    dest: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/docker/prometheus
+    - /var/prometheus/data
+    - /etc/docker/prometheus/template
+
+- name: Copy docker Prometheus configuration to host
+  template:
+    src: prometheus.yml
+    dest: /etc/docker/prometheus/prometheus.yml
+    mode: 0755
+
+- name: Copy alertmanager templates to host
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/docker/prometheus/template/"
+    owner: root
+    mode: 0755
+  with_fileglob:
+    - "alerts/*"
+
+- name: Start docker Prometheus container
+  docker_service:
+    project_name: prometheus
+    definition:
+      version: '2'
+      services:
+        prometheus:
+          image: "prom/prometheus"
+          container_name: "prometheus"
+          expose:
+            - "9090"
+          volumes:
+            - /etc/docker/prometheus/prometheus.yml:/prometheus/prometheus.yml
+            - /etc/docker/prometheus/template:/prometheus/template
+            - /var/prometheus/data:/prometheus/data
+          command: "-config.file=/prometheus/prometheus.yml -storage.local.retention=336h -alertmanager.url=http://{{ alertmanager_host }}:9093"
+          hostname: "prometheus"
+          dns: "{{ mgmt_dns_primary_ip }}"
+          restart: always
+          labels: "{{ docker_prometheus_labels }}"
+      networks:
+        default:
+          external:
+            name: "{{ docker_network_name }}"

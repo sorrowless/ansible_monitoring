@@ -1,0 +1,85 @@
+---
+- name: Set OS-specific vars
+  include_vars: "{{ item }}"
+  with_first_found:
+    - '{{ ansible_os_family }}.yml'
+
+- name: Install ISC Bind
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ bind_packages }}"
+
+- name: Create needed directories
+  file:
+    name: "{{ keys_directory }}"
+    state: directory
+
+- name: Generate key for updates
+  command: dnssec-keygen -a hmac-md5 -b 256 -n HOST "{{ key_name }}"
+  args:
+    creates: "{{ keys_directory }}/ddns_key.current"
+    chdir: "{{ keys_directory }}"
+  register: generated_key
+
+- name: Get generated key value
+  command: awk '{print $7}' "{{ generated_key.stdout }}.key"
+  ignore_errors: yes
+  args:
+    chdir: "{{ keys_directory }}"
+  register: generated_key_value
+
+- name: Delete temporary key files
+  file:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ keys_directory }}/{{ generated_key.stdout }}.key"
+    - "{{ keys_directory }}/{{ generated_key.stdout }}.private"
+  when: generated_key.changed
+
+- set_fact:
+    temp_dns_key: "{{ generated_key_value.stdout }}"
+    when: generated_key.changed
+
+- name: Create persistent key file
+  shell: echo "{{ temp_dns_key }}" > "{{ keys_directory }}/ddns_key.current"
+  when: generated_key.changed
+
+- name: Read dns key from persistent file
+  command: cat "{{ keys_directory }}/ddns_key.current"
+  register: persistent_key
+
+- set_fact:
+    dns_key_value: "{{ persistent_key.stdout }}"
+
+- name: Configure key usage
+  template:
+    src: ddns_updates.conf
+    dest: "{{ keys_directory }}/ddns_updates.conf"
+  when: generated_key.changed
+
+- name: Configure zones
+  template:
+    src: zone.conf
+    dest: "/var/named/{{ item.zone_filename }}"
+  with_items: "{{ zones }}"
+
+- name: Configure main Bind options
+  template:
+    src: named.conf
+    dest: "{{ bind_config_place }}"
+
+- name: Set named.conf permissions
+  file:
+    path: "{{ bind_config_place }}"
+    mode: 0755
+
+- name: Set named directory permissions
+  file:
+    path: /var/named
+    mode: u=rwX,g=rX,o=rX
+    owner: "{{ bind_user }}"
+    recurse: yes
+  notify:
+    - Restart Bind

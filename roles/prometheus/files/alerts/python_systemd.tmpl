@@ -1,0 +1,7 @@
+ALERT SystemDServiceIsDown
+  IF graphite_events_systemd < 1
+  FOR 1m
+  ANNOTATIONS {
+    summary = "Systemd service is down",
+    description = "Systemd service {{ labels.type }} on host {{ labels.host }} is down",
+  }

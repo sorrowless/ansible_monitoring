@@ -1,0 +1,11 @@
+testmaster ansible_host=172.22.200.2 ansible_user=sbog ansible_become=true
+#testmastered ansible_host=172.22.200.3 ansible_user=sbog ansible_become=true
+
+[docker]
+testmaster docker_network_name=internal.loc docker_network_subnet=172.22.101.0/24 docker_network_gateway=172.22.101.1 docker_network_iprange=172.22.101.128/25
+
+[dns_server]
+testmaster
+
+[monitoring]
+testmaster

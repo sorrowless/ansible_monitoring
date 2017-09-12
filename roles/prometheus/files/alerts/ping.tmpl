@@ -1,0 +1,15 @@
+ALERT ThereIsNoPingToHost
+  IF graphite_events_ping{pingtype="drop"} > 0.5
+  FOR 2m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} named {{ $labels.metric }} is not reachable",
+    description = "{{ $labels.host }} named {{ $labels.metric }} is not reachable",
+  }
+
+ALERT TooLongPingToHost
+  IF graphite_events_ping{pingtype="success"} > 500
+  FOR 5m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} named {{ $labels.metric }} answered to ping for more than a 500ms",
+    description = "{{ $labels.host }} named {{ $labels.metric }} answered to ping for more than a 500ms",
+  }

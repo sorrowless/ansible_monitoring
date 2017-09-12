@@ -1,0 +1,7 @@
+ALERT TooLowEntropy
+  IF graphite_events_entropy < 100
+  FOR 10m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} entropy level too low",
+    description = "{{ $labels.host }} of job {{ $labels.job }} has too low entropy for a 10 minutes",
+  }

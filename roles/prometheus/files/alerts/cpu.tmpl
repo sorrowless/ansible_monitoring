@@ -1,0 +1,23 @@
+ALERT CpuHighIOWait
+  IF graphite_events_cpu{type="wait"} > 80
+  FOR 5m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} has high iowait",
+    description = "{{ $labels.host }} of job {{ $labels.job }} has high iowait for more than 5 minutes.",
+  }
+
+ALERT CpuHighSystem
+  IF graphite_events_cpu{type="system"} > 95
+  FOR 5m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} has high kernel load",
+    description = "{{ $labels.host }} of job {{ $labels.job }} has high kernel load for more than 5 minutes.",
+  }
+
+ALERT CpuHighUser
+  IF graphite_events_cpu{type="user"} > 95
+  FOR 5m
+  ANNOTATIONS {
+    summary = "Instance {{ $labels.host }} has high user load",
+    description = "{{ $labels.host }} of job {{ $labels.job }} has high user load for more than 5 minutes.",
+  }

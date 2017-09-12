@@ -1,0 +1,46 @@
+---
+- name: Create needed directories for docker-ddns configuration
+  file:
+    dest: /etc/docker/docker-ddns
+    state: directory
+    mode: 0755
+
+- name: Copy docker DDNS configuration to host
+  template:
+    src: docker-ddns.json
+    dest: /etc/docker/docker-ddns/docker-ddns.json
+
+- name: Copy docker DDNS secrets to host
+  template:
+    src: secrets.json
+    dest: /etc/docker/docker-ddns/secrets.json
+
+- name: Set docker directory permissions
+  file:
+    path: /etc/docker
+    mode: u=rwX,g=rX,o=rX
+    owner: root
+    recurse: yes
+
+- name: Start docker DDNS container
+  docker_service:
+    project_name: docker_ddns
+    restarted: yes
+    definition:
+      version: '2'
+      services:
+        docker-ddns:
+          image: "gra2f/docker-ddns"
+          container_name: "docker_ddns"
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /etc/docker/docker-ddns/docker-ddns.json:/ddns/docker-ddns.json
+            - /etc/docker/docker-ddns/secrets.json:/ddns/secrets.json
+          hostname: "docker-ddns"
+          dns: "{{ mgmt_dns_primary_ip }}"
+          command: "-v 1.24"
+          restart: always
+      networks:
+        default:
+          external:
+            name: "{{ docker_network_name }}"

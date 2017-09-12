@@ -1,0 +1,8 @@
+ALERT DiskSpaceIsTooLow
+  IF graphite_events_disk{metric="df_complex-free", path="/"} < 200000000
+  OR graphite_events_disk{metric="df_complex-free", path="/var/"} < 200000000
+  FOR 10m
+  ANNOTATIONS {
+    summary = "Host {{ labels.host }} has too low disk space free",
+    description = "Host {{ labels.host }} has too low disk space free",
+  }

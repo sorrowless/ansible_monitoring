@@ -1,0 +1,7 @@
+---
+bind_packages:
+  - bind9
+  - bind9utils
+bind_user: bind
+bind_service: bind9
+bind_config_place: /etc/bind/named.conf

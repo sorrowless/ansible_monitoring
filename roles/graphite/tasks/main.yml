@@ -1,0 +1,33 @@
+---
+- name: Create needed directories for docker-graphite
+  file:
+    dest: /var/graphite/storage
+    state: directory
+    mode: 0755
+
+- name: Start docker Graphite container
+  docker_service:
+    state: present
+    project_name: graphite
+    definition:
+      version: '2'
+      services:
+        graphite:
+          image: "hopsoft/graphite-statsd"
+          container_name: "graphite"
+          expose:
+            - "80"
+            - "2003-2004"
+            - "2023-2024"
+          volumes:
+            - /var/graphite/storage:/opt/graphite/storage
+          hostname: "graphite"
+          dns: "{{ mgmt_dns_primary_ip }}"
+          restart: always
+          labels: "{{ docker_graphite_labels }}"
+      networks:
+        default:
+          external:
+            name: "{{ docker_network_name }}"
+
+

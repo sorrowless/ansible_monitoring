@@ -1,0 +1,102 @@
+---
+- name: Install Collectd
+  package:
+    name: collectd
+    state: latest
+
+- name: Create Collectd conf directory
+  file:
+    dest: /etc/collectd/collectd.conf.d
+    state: directory
+    mode: 0755
+
+- name: Configure Collectd
+  template: src=collectd.conf dest=/etc/collectd/collectd.conf
+
+- name: Install python libs
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-pip
+    - python-dbus
+    - git
+  when: collectd_systemd_services is defined
+
+- name: Install Collectd Systemd plugin
+  pip:
+    name: git+https://github.com/mbachry/collectd-systemd.git
+    editable: false
+  when: collectd_systemd_services is defined
+
+- name: Link main Collectd conf file
+  file:
+    src: /etc/collectd/collectd.conf
+    dest: /etc/collectd.conf
+    state: link
+    force: yes
+  notify:
+    - Restart Collectd
+
+- name: Configure write_graphite Collectd plugin
+  template:
+    src: write_graphite.conf
+    dest: /etc/collectd/collectd.conf.d/write_graphite.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure df Collectd plugin
+  template:
+    src: df.conf
+    dest: /etc/collectd/collectd.conf.d/df.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure mysql Collectd plugin
+  template:
+    src: mysql.conf
+    dest: /etc/collectd/collectd.conf.d/mysql.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure ping Collectd plugin
+  template:
+    src: ping.conf
+    dest: /etc/collectd/collectd.conf.d/ping.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure tail Collectd plugin
+  template:
+    src: tail.conf
+    dest: /etc/collectd/collectd.conf.d/tail.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure curl Collectd plugin
+  template:
+    src: curl.conf
+    dest: /etc/collectd/collectd.conf.d/curl.conf
+  notify:
+    - Restart Collectd
+
+- name: Configure python Collectd plugin
+  template:
+    src: python_systemd.conf
+    dest: /etc/collectd/collectd.conf.d/python_systemd.conf
+  when: collectd_systemd_services is defined
+  notify:
+    - Restart Collectd
+
+- name: Configure network Collectd plugin
+  template:
+    src: network.conf
+    dest: /etc/collectd/collectd.conf.d/network.conf
+  notify:
+    - Restart Collectd
+
+- name: Create auth file for network server plugin
+  template:
+    src: auth_file
+    dest: /etc/collectd/auth_file
+  when: collectd_network_server == True

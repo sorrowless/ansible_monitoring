@@ -1,0 +1,5 @@
+---
+docker_packages:
+  - docker.io
+  - python-docker
+  - docker-compose
