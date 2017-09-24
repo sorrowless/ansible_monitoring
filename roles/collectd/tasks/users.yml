@@ -1,0 +1,7 @@
+---
+- name: Configure users Collectd plugin
+  template:
+    src: users.conf
+    dest: /etc/collectd/collectd.conf.d/users.conf
+  notify:
+    - Restart Collectd

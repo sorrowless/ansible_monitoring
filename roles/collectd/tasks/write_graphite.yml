@@ -1,0 +1,7 @@
+---
+- name: Configure write_graphite Collectd plugin
+  template:
+    src: write_graphite.conf
+    dest: /etc/collectd/collectd.conf.d/write_graphite.conf
+  notify:
+    - Restart Collectd

@@ -1,0 +1,7 @@
+---
+- name: Configure uptime Collectd plugin
+  template:
+    src: uptime.conf
+    dest: /etc/collectd/collectd.conf.d/uptime.conf
+  notify:
+    - Restart Collectd

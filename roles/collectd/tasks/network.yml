@@ -1,0 +1,13 @@
+---
+- name: Configure network Collectd plugin
+  template:
+    src: network.conf
+    dest: /etc/collectd/collectd.conf.d/network.conf
+  notify:
+    - Restart Collectd
+
+- name: Create auth file for network server plugin
+  template:
+    src: auth_file
+    dest: /etc/collectd/auth_file
+  when: collectd_network_server == True

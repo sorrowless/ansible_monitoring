@@ -1,0 +1,7 @@
+---
+- name: Configure interface Collectd plugin
+  template:
+    src: interface.conf
+    dest: /etc/collectd/collectd.conf.d/interface.conf
+  notify:
+    - Restart Collectd

@@ -1,0 +1,7 @@
+---
+- name: Configure processes Collectd plugin
+  template:
+    src: processes.conf
+    dest: /etc/collectd/collectd.conf.d/processes.conf
+  notify:
+    - Restart Collectd

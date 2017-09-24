@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+HOST_NAME="${1:-localhost}"
+HOST_PORT="${2:-80}"
+TIMEOUT="${3:-5}"
+INTERVAL="${4:-60}"
+
+function do_magic () {
+    HOST=$1
+    PORT=$2
+    TOUT=$3
+    nc -z -w $TOUT $HOST $PORT
+    RC=$?
+    return $RC
+}
+
+while sleep "$INTERVAL"; do
+    do_magic $HOST_NAME $HOST_PORT $TIMEOUT
+    VALUE=$?
+    if [[ "$VALUE" == "0" ]]; then
+       RES=1
+    else
+       RES=0
+    fi
+    echo "PUTVAL \"$HOSTNAME/exec-portcheck-$HOST_NAME-port-$HOST_PORT/gauge-accessible\" interval=$INTERVAL N:$RES.0"
+done

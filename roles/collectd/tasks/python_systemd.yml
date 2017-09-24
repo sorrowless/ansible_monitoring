@@ -1,0 +1,22 @@
+---
+- name: Install python libs
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-pip
+    - python-dbus
+    - git
+
+- name: Install Collectd Systemd plugin
+  pip:
+    name: git+https://github.com/mbachry/collectd-systemd.git
+    editable: false
+
+- name: Configure systemd services Collectd plugin
+  template:
+    src: python_systemd.conf
+    dest: /etc/collectd/collectd.conf.d/python_systemd.conf
+  when: collectd_systemd_services is defined
+  notify:
+    - Restart Collectd

@@ -1,0 +1,7 @@
+---
+- name: Configure df Collectd plugin
+  template:
+    src: df.conf
+    dest: /etc/collectd/collectd.conf.d/df.conf
+  notify:
+    - Restart Collectd

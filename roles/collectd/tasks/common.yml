@@ -1,0 +1,23 @@
+---
+- name: Install Collectd
+  package:
+    name: collectd
+    state: latest
+
+- name: Create Collectd conf directory
+  file:
+    dest: /etc/collectd/collectd.conf.d
+    state: directory
+    mode: 0755
+
+- name: Configure Collectd
+  template: src=collectd.conf dest=/etc/collectd/collectd.conf
+
+- name: Link main Collectd conf file
+  file:
+    src: /etc/collectd/collectd.conf
+    dest: /etc/collectd.conf
+    state: link
+    force: yes
+  notify:
+    - Restart Collectd

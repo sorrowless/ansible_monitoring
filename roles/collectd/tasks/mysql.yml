@@ -1,0 +1,7 @@
+---
+- name: Configure mysql Collectd plugin
+  template:
+    src: mysql.conf
+    dest: /etc/collectd/collectd.conf.d/mysql.conf
+  notify:
+    - Restart Collectd

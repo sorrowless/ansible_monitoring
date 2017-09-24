@@ -1,0 +1,7 @@
+---
+- name: Configure load Collectd plugin
+  template:
+    src: load.conf
+    dest: /etc/collectd/collectd.conf.d/load.conf
+  notify:
+    - Restart Collectd

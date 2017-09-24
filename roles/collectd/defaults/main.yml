@@ -1,4 +1,50 @@
 ---
 collectd_interval: 15
-collectd_load_plugins: []
+
+# Default enabled plugins list with needed values
+collectd_cpu: true
+collectd_curl: true
+collectd_curl_pages:
+  -
+   name: google_rootpage
+   url: https://google.ru
+   measuretime: true
+   measurecode: true
+   matches: []
+collectd_df: true
+collectd_disk: true
+collectd_entropy: true
+collectd_interface: true
+collectd_load: true
+collectd_memory: true
+collectd_mysql: true
+collectd_mysql_databases: []
 collectd_network_server: false
+collectd_network_client: false
+collectd_network_user: user
+collectd_network_password: p@ssword
+# collectd_network_server_host should be defined for clients
+collectd_ping: true
+collectd_ping_targets:
+  - google.ru
+  - 8.8.8.8
+collectd_port_check: true
+collectd_port_data:
+  -
+   host: google.ru
+   port: 80
+   timeout: 5
+  -
+   host: google.ru
+   port: 81
+   timeout: 5
+collectd_processes: true
+collectd_systemd: true
+collectd_systemd_services: []
+collectd_swap: true
+collectd_tail: true
+collectd_tail_files: []
+collectd_uptime: true
+collectd_users: true
+# We only write to graphite when our network server is enabled
+collectd_write_graphite: true

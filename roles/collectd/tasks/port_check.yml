@@ -1,0 +1,21 @@
+---
+- name: Add Collectd user
+  user:
+    name: collectd
+    shell: /bin/bash
+    comment: "Group to run exec collect plugins"
+
+- name: Copy port checking script to the target host
+  copy:
+    src: port_check
+    dest: /usr/bin/port_check
+    mode: 0755
+  notify:
+    - Restart Collectd
+
+- name: Configure Collectd port check plugin
+  template:
+    src: port_check.conf
+    dest: /etc/collectd/collectd.conf.d/port_check.conf
+  notify:
+    - Restart Collectd

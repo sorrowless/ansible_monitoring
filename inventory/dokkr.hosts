@@ -1,0 +1,16 @@
+dokkr_monitor
+
+[production]
+dokkr_monitor
+
+[support]
+dokkr_monitor
+
+[docker]
+dokkr_monitor
+
+[dns_server]
+dokkr_monitor
+
+[monitoring]
+dokkr_monitor

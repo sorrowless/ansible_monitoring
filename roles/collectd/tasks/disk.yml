@@ -1,0 +1,7 @@
+---
+- name: Configure disk Collectd plugin
+  template:
+    src: disk.conf
+    dest: /etc/collectd/collectd.conf.d/disk.conf
+  notify:
+    - Restart Collectd

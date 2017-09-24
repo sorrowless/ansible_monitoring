@@ -1,0 +1,7 @@
+---
+- name: Configure swap Collectd plugin
+  template:
+    src: swap.conf
+    dest: /etc/collectd/collectd.conf.d/swap.conf
+  notify:
+    - Restart Collectd

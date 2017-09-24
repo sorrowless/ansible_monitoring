@@ -1,0 +1,5 @@
+---
+collectd_network_server_host: 172.22.200.2
+collectd_network_user: collectd_user
+collectd_network_password: collectd_password
+slack_api_url: ""

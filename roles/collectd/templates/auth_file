@@ -1,1 +1,1 @@
-{{ collectd_network_server_user }}: {{ collectd_network_server_password }}
+{{ collectd_network_user }}: {{ collectd_network_password }}

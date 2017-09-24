@@ -1,0 +1,7 @@
+---
+- name: Configure entropy Collectd plugin
+  template:
+    src: entropy.conf
+    dest: /etc/collectd/collectd.conf.d/entropy.conf
+  notify:
+    - Restart Collectd

@@ -1,0 +1,7 @@
+ALERT PortCheckFailed
+  IF graphite_events_portcheck < 1
+  FOR 1m
+  ANNOTATIONS {
+    summary = "Port check is failed",
+    description = "Port check of sandcoin in west Europe from host monitor was failed",
+  }

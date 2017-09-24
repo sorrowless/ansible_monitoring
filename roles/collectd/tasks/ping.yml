@@ -1,0 +1,7 @@
+---
+- name: Configure ping Collectd plugin
+  template:
+    src: ping.conf
+    dest: /etc/collectd/collectd.conf.d/ping.conf
+  notify:
+    - Restart Collectd

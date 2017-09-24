@@ -1,0 +1,7 @@
+---
+- name: Configure memory Collectd plugin
+  template:
+    src: memory.conf
+    dest: /etc/collectd/collectd.conf.d/memory.conf
+  notify:
+    - Restart Collectd

@@ -1,102 +1,59 @@
 ---
-- name: Install Collectd
-  package:
-    name: collectd
-    state: latest
+- include: common.yml
 
-- name: Create Collectd conf directory
-  file:
-    dest: /etc/collectd/collectd.conf.d
-    state: directory
-    mode: 0755
+- include: cpu.yml
+  when: collectd_cpu == True
 
-- name: Configure Collectd
-  template: src=collectd.conf dest=/etc/collectd/collectd.conf
+- include: curl.yml
+  when: collectd_curl == True
 
-- name: Install python libs
-  package:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - python-pip
-    - python-dbus
-    - git
-  when: collectd_systemd_services is defined
+- include: df.yml
+  when: collectd_df == True
 
-- name: Install Collectd Systemd plugin
-  pip:
-    name: git+https://github.com/mbachry/collectd-systemd.git
-    editable: false
-  when: collectd_systemd_services is defined
+- include: disk.yml
+  when: collectd_disk == True
 
-- name: Link main Collectd conf file
-  file:
-    src: /etc/collectd/collectd.conf
-    dest: /etc/collectd.conf
-    state: link
-    force: yes
-  notify:
-    - Restart Collectd
+- include: entropy.yml
+  when: collectd_entropy == True
 
-- name: Configure write_graphite Collectd plugin
-  template:
-    src: write_graphite.conf
-    dest: /etc/collectd/collectd.conf.d/write_graphite.conf
-  notify:
-    - Restart Collectd
+- include: interface.yml
+  when: collectd_interface == True
 
-- name: Configure df Collectd plugin
-  template:
-    src: df.conf
-    dest: /etc/collectd/collectd.conf.d/df.conf
-  notify:
-    - Restart Collectd
+- include: load.yml
+  when: collectd_load == True
 
-- name: Configure mysql Collectd plugin
-  template:
-    src: mysql.conf
-    dest: /etc/collectd/collectd.conf.d/mysql.conf
-  notify:
-    - Restart Collectd
+- include: memory.yml
+  when: collectd_memory == True
 
-- name: Configure ping Collectd plugin
-  template:
-    src: ping.conf
-    dest: /etc/collectd/collectd.conf.d/ping.conf
-  notify:
-    - Restart Collectd
+- include: mysql.yml
+  when: collectd_mysql == True
 
-- name: Configure tail Collectd plugin
-  template:
-    src: tail.conf
-    dest: /etc/collectd/collectd.conf.d/tail.conf
-  notify:
-    - Restart Collectd
+- include: network.yml
+  when: collectd_network_server == True or collectd_network_client == True
 
-- name: Configure curl Collectd plugin
-  template:
-    src: curl.conf
-    dest: /etc/collectd/collectd.conf.d/curl.conf
-  notify:
-    - Restart Collectd
+- include: ping.yml
+  when: collectd_ping == True
 
-- name: Configure python Collectd plugin
-  template:
-    src: python_systemd.conf
-    dest: /etc/collectd/collectd.conf.d/python_systemd.conf
-  when: collectd_systemd_services is defined
-  notify:
-    - Restart Collectd
+- include: port_check.yml
+  when: collectd_port_check == True
 
-- name: Configure network Collectd plugin
-  template:
-    src: network.conf
-    dest: /etc/collectd/collectd.conf.d/network.conf
-  notify:
-    - Restart Collectd
+- include: processes.yml
+  when: collectd_processes == True
 
-- name: Create auth file for network server plugin
-  template:
-    src: auth_file
-    dest: /etc/collectd/auth_file
-  when: collectd_network_server == True
+- include: python_systemd.yml
+  when: collectd_systemd == True
+
+- include: swap.yml
+  when: collectd_swap == True
+
+- include: tail.yml
+  when: collectd_tail == True
+
+- include: uptime.yml
+  when: collectd_uptime == True
+
+- include: users.yml
+  when: collectd_users == True
+
+- include: write_graphite.yml
+  when: collectd_write_graphite == True

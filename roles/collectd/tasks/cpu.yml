@@ -1,0 +1,7 @@
+---
+- name: Configure cpu Collectd plugin
+  template:
+    src: cpu.conf
+    dest: /etc/collectd/collectd.conf.d/cpu.conf
+  notify:
+    - Restart Collectd

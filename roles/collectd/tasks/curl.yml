@@ -1,0 +1,7 @@
+---
+- name: Configure curl Collectd plugin
+  template:
+    src: curl.conf
+    dest: /etc/collectd/collectd.conf.d/curl.conf
+  notify:
+    - Restart Collectd

@@ -1,0 +1,7 @@
+---
+- name: Configure tail Collectd plugin
+  template:
+    src: tail.conf
+    dest: /etc/collectd/collectd.conf.d/tail.conf
+  notify:
+    - Restart Collectd

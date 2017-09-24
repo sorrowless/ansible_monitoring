@@ -2,30 +2,7 @@
 ansible_host: 172.22.200.2
 ansible_user: sbog
 ansible_become: true
-collectd_ping_targets:
-  - google.ru
-  - 8.8.8.8
-collectd_curl_pages:
-  -
-   name: google_rootpage
-   url: https://google.ru
-   measuretime: true
-   measurecode: true
-   matches: []
 collectd_systemd_services:
   - bind9
   - postfix
 collectd_network_server: true
-collectd_network_server_host: 172.22.200.2
-mediawiki_hostname: wiki.example.ru
-mediawiki_ssl_enabled: false
-mysql_port: 3306
-mysql_bind_address: "127.0.0.1"
-mysql_root_db_pass: mysqlroot
-mysql_users:
-  - name: wikiadmin
-    pass: wikiadminpass
-    priv: "wikiadb.*:ALL"
-mysql_db:
-  - name: wikidb
-    replicate: no
