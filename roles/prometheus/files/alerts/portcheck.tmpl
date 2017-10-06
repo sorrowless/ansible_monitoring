@@ -3,5 +3,5 @@ ALERT PortCheckFailed
   FOR 1m
   ANNOTATIONS {
     summary = "Port check is failed",
-    description = "Port check of sandcoin in west Europe from host monitor was failed",
+    description = "Port check of {{ $labels.type }} from host {{ $labels.host }} was failed",
   }
