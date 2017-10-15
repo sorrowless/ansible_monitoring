@@ -13,6 +13,7 @@
     src: config.yml
     dest: /etc/docker/alertmanager/config.yml
     mode: 0755
+  register: config
 
 
 - name: Start docker Alertmanager container
@@ -38,3 +39,10 @@
         default:
           external:
             name: "{{ docker_network_name }}"
+
+- name: Restart alertmanager container
+  docker_container:
+    name: alertmanager
+    restart: yes
+    state: started
+  when: config.changed

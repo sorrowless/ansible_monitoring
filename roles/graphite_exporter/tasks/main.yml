@@ -10,6 +10,7 @@
     src: graphite_mapping.conf
     dest: /etc/docker/graphite-exporter/graphite_mapping.conf
     mode: 0755
+  register: mapping
 
 - name: Start docker Graphite-exporter container
   docker_service:
@@ -35,3 +36,10 @@
         default:
           external:
             name: "{{ docker_network_name }}"
+
+- name: Restart graphite-exporter container
+  docker_container:
+    name: graphite-exporter
+    restart: yes
+    state: started
+  when: mapping.changed

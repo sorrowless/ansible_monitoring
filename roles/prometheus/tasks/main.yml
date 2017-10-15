@@ -14,6 +14,7 @@
     src: prometheus.yml
     dest: /etc/docker/prometheus/prometheus.yml
     mode: 0755
+  register: config
 
 - name: Copy alertmanager templates to host
   copy:
@@ -23,6 +24,7 @@
     mode: 0755
   with_fileglob:
     - "alerts/*"
+  register: templates
 
 - name: Start docker Prometheus container
   docker_service:
@@ -48,3 +50,11 @@
         default:
           external:
             name: "{{ docker_network_name }}"
+
+- name: Restart prometheus container
+  docker_container:
+    name: prometheus
+    restart: yes
+    state: started
+  when: templates.changed or config.changed
+
